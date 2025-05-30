@@ -1,0 +1,12 @@
+/*@include color-mode(dark) {
+    .navbar-bg {
+        background-color: #290014;
+    }
+}
+
+@include color-mode(light) {
+    .navbar-bg {
+        background-color: #DB006A;
+    }
+}
+*/

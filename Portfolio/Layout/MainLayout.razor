@@ -1,0 +1,137 @@
+﻿@inherits LayoutComponentBase
+
+<main class="theme">
+    <Toasts class="p-3" Messages="messages" AutoHide="true" Delay="5000" Placement="ToastsPlacement.BottomRight" />
+    <nav class="navbar sticky-top navbar-expand-lg navbar-bg">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Navbar</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 navbar-nav-scroll">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Link</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Dropdown
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">Action</a></li>
+                            <li><a class="dropdown-item" href="#">Another action</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#">Something else here</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link disabled" aria-disabled="true">Disabled</a>
+                    </li>
+                    <li class="nav-item">
+                        <ThemeSwitcher Class="ps-3 ps-lg-2" Position="DropdownMenuPosition.End" OnThemeChanged="OnThemeChanged" />
+                    </li>
+                </ul>
+                <form class="d-flex" role="search">
+                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+    <article class="content px-4">
+        <div class="py-2">
+            @Body
+        </div>
+    </article>
+    <Footer />
+</main>
+
+
+
+
+
+@* <div class="bb-page" data-bs-theme="dark">
+
+
+    <main>
+        <div class="top-row px-3">
+            <div class="float-end">
+           </div>
+        </div>
+
+        <article class="content">
+            @Body
+        </article>
+        <div>
+
+        </div>
+    </main>
+
+
+</div> *@
+
+@code {
+    string currentTheme = "dark";
+    // IEnumerable<NavItem>? navItems;
+    [Inject] protected ToastService ToastService { get; set; } = default!;
+    List<ToastMessage> messages = new List<ToastMessage>();
+
+    // private async Task<Sidebar2DataProviderResult> Sidebar2DataProvider(Sidebar2DataProviderRequest request)
+    // {
+    //     if (navItems is null)
+    //         navItems = GetNavItems();
+
+    //     return await Task.FromResult(request.ApplyTo(navItems));
+    // }
+
+    // private IEnumerable<NavItem> GetNavItems()
+    // {
+    //     navItems = new List<NavItem>
+    //     {
+    //         new NavItem { Id = "1", Href = "/getting-started", IconName = IconName.HouseDoorFill, Text = "Getting Started"},
+
+    //         new NavItem { Id = "2", IconName = IconName.LayoutSidebarInset, Text = "Content", IconColor = IconColor.Primary },
+    //         new NavItem { Id = "3", Href = "/icons", IconName = IconName.PersonSquare, Text = "Icons", ParentId="2"},
+
+    //         new NavItem { Id = "4", IconName = IconName.ExclamationTriangleFill, Text = "Components", IconColor = IconColor.Success },
+    //         new NavItem { Id = "5", Href = "/alerts", IconName = IconName.CheckCircleFill, Text = "Alerts", ParentId="4"},
+    //         new NavItem { Id = "6", Href = "/breadcrumb", IconName = IconName.SegmentedNav, Text = "Breadcrumb", ParentId="4"},
+    //         new NavItem { Id = "7", Href = "/sidebar", IconName = IconName.LayoutSidebarInset, Text = "Sidebar", ParentId="4"},
+
+    //         new NavItem { Id = "8", IconName = IconName.WindowPlus, Text = "Forms", IconColor = IconColor.Danger },
+    //         new NavItem { Id = "9", Href = "/autocomplete", IconName = IconName.InputCursorText, Text = "Auto Complete", ParentId="8"},
+    //         new NavItem { Id = "10", Href = "/currency-input", IconName = IconName.CurrencyDollar, Text = "Currency Input", ParentId="8"},
+    //         new NavItem { Id = "11", Href = "/number-input", IconName = IconName.InputCursor, Text = "Number Input", ParentId="8"},
+    //         new NavItem { Id = "12", Href = "/switch", IconName = IconName.ToggleOn, Text = "Switch", ParentId="8"},
+    //     };
+
+    //     return navItems;
+    // }
+
+    private void ShowMessage(ToastType toastType, string title, string message) => messages.Add(CreateToastMessage(toastType, title, message));
+
+    private ToastMessage CreateToastMessage(ToastType toastType, string title, string message)
+    {
+        var toastMessage = new ToastMessage();
+
+        toastMessage.Type = toastType;
+        toastMessage.Title = title;
+        toastMessage.HelpText = $"{DateTime.Now}";
+        toastMessage.Message = message;
+        toastMessage.AutoHide = !(toastType == ToastType.Danger || toastType == ToastType.Warning);
+
+        return toastMessage;
+    }
+
+    private void OnThemeChanged(string themeName)
+    {
+        if (themeName != currentTheme)
+        {
+            ToastService.Notify(new(ToastType.Success, $"Theme changed to {themeName} theme."));
+        }
+        currentTheme = themeName;
+    }
+}
